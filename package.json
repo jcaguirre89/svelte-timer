@@ -1,0 +1,33 @@
+{
+  "name": "svelte-svite-typescript",
+  "version": "0.0.0",
+  "scripts": {
+    "validate": "svelte-check && tsc --noEmit",
+    "dev": "svite -ts",
+    "svelte-check": "svelte-check",
+    "build": "svite build -ts"
+  },
+  "devDependencies": {
+    "@tsconfig/svelte": "^1.0.10",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-cypress": "^2.11.2",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "postcss": "^8.1.1",
+    "postcss-import": "^12.0.1",
+    "postcss-load-config": "^2.1.2",
+    "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.1.2",
+    "prettier-plugin-svelte": "^1.4.0",
+    "svelte": "3.29.0",
+    "svelte-check": "^1.0.55",
+    "svelte-hmr": "0.11.1",
+    "svelte-preprocess": "4.3.2",
+    "svite": "^0.7.2",
+    "tailwindcss": "^1.8.10",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.3"
+  }
+}
