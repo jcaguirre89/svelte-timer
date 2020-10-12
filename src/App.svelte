@@ -6,4 +6,4 @@
   import Timer from './Timer.svelte'
  </script>
 
- <Timer trainDuration={5000} restDuration={3000}/>
+ <Timer />

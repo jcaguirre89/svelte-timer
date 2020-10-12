@@ -2,9 +2,6 @@
   import { formatTime } from "./utils";
   import { onDestroy } from "svelte";
 
-  export let trainDuration;
-  export let restDuration;
-
   let states = {
     train: "train",
     idle: "idle",
@@ -14,8 +11,10 @@
   };
   let currentState = states.idle;
   let previousState = null;
-  let trainRemaining = trainDuration;
-  let restRemaining = restDuration;
+  let trainDuration = 5000;
+  let restDuration = 3000;
+  $: trainRemaining = trainDuration;
+  $: restRemaining = restDuration;
   $: timeRemaining = !currentState.startsWith("rest")
     ? trainRemaining
     : restRemaining;
@@ -119,4 +118,24 @@
     {:else}<button on:click="{pause}">Pause</button>{/if}
     <button on:click="{reset}">Stop</button>
   {/if}
+  <label>
+    Train Duration
+    <input
+    type="range"
+    bind:value="{trainDuration}"
+    min="0"
+    max="300000"
+    step="1000"
+    />
+  </label>
+  <label>
+    Rest Duration
+    <input
+    type="range"
+    bind:value="{restDuration}"
+    min="0"
+    max="60000"
+    step="1000"
+    />
+  </label>
 </main>
