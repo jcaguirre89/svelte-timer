@@ -114,7 +114,7 @@
   }
 
   label {
-    @apply text-white;
+    @apply text-white text-xl;
   }
 
   .isRest {
@@ -129,10 +129,14 @@
 <main class:isRest class:isTrain class="md:justify-center">
   <div class="mt-32 md:mt-0">
     <p class="text-6xl text-white mb-b">{formatTime(timeRemaining)}</p>
-    <p class="text-white uppercase tracking-wide text-2xl mb-12">
-      Rounds:
-      {rounds}
-    </p>
+    {#if rounds >= 1}
+      <p class="text-white text-2xl mb-12">
+        {rounds}
+        round{rounds > 1 ? 's' : ''}
+      </p>
+    {:else}
+      <p class="text-white text-2xl mb-12">0 rounds</p>
+    {/if}
     <div class="flex">
       {#if currentState == states.idle}
         <button on:click="{train}"><PlayIcon /></button>
