@@ -1,6 +1,9 @@
 <script>
   import { formatTime } from "./utils";
   import { onDestroy } from "svelte";
+  import PlayIcon from "./PlayIcon.svelte";
+  import PauseIcon from "./PauseIcon.svelte";
+  import StopIcon from "./StopIcon.svelte";
 
   let states = {
     train: "train",
@@ -10,14 +13,14 @@
     restPaused: "restPaused",
   };
   let currentState = states.idle;
+  $: isTrain = ["train", "trainPaused"].includes(currentState);
+  $: isRest = ["rest", "restPaused"].includes(currentState);
   let previousState = null;
   let trainDuration = 5000;
   let restDuration = 3000;
   $: trainRemaining = trainDuration;
   $: restRemaining = restDuration;
-  $: timeRemaining = !currentState.startsWith("rest")
-    ? trainRemaining
-    : restRemaining;
+  $: timeRemaining = isRest ? restRemaining : trainRemaining;
   let rounds = 0;
   let paused = false;
   let interval;
@@ -97,45 +100,76 @@
   });
 </script>
 
-<style>
-  .rest {
+<style lang="postcss">
+  main {
+    @apply h-screen w-screen bg-gray-500 flex flex-col items-center;
+  }
+
+  button {
+    @apply rounded-full uppercase text-white bg-gray-800 flex items-center justify-center;
+  }
+
+  input {
+    @apply w-40;
+  }
+
+  label {
+    @apply text-white;
+  }
+
+  .isRest {
     @apply bg-red-500;
+  }
+
+  .isTrain {
+    @apply bg-green-500;
   }
 </style>
 
-<main
-  class="h-screen w-screen bg-green-500"
-  class:rest="{currentState.startsWith('rest')}"
->
-  <p>{formatTime(timeRemaining)}</p>
-  <p>{currentState}</p>
-  <p>{rounds}</p>
-  {#if currentState == states.idle}
-    <button on:click="{train}">Start</button>
-  {:else}
-    {#if currentState.endsWith('Paused')}
-      <button on:click="{resume}">Resume</button>
-    {:else}<button on:click="{pause}">Pause</button>{/if}
-    <button on:click="{reset}">Stop</button>
-  {/if}
-  <label>
-    Train Duration
-    <input
-    type="range"
-    bind:value="{trainDuration}"
-    min="0"
-    max="300000"
-    step="1000"
-    />
-  </label>
-  <label>
-    Rest Duration
-    <input
-    type="range"
-    bind:value="{restDuration}"
-    min="0"
-    max="60000"
-    step="1000"
-    />
-  </label>
+<main class:isRest class:isTrain class="md:justify-center">
+  <div class="mt-32 md:mt-0">
+    <p class="text-6xl text-white mb-b">{formatTime(timeRemaining)}</p>
+    <p class="text-white uppercase tracking-wide text-2xl mb-12">
+      Rounds:
+      {rounds}
+    </p>
+    <div class="flex">
+      {#if currentState == states.idle}
+        <button on:click="{train}"><PlayIcon /></button>
+      {:else}
+        {#if currentState.endsWith('Paused')}
+          <button on:click="{resume}"><PlayIcon /></button>
+        {:else}
+          <button on:click="{pause}"><PauseIcon /></button>
+        {/if}
+        <button class="ml-2" on:click="{reset}"><StopIcon /></button>
+      {/if}
+    </div>
+    <div class="flex flex-col mt-12">
+      <label for="trainDuration">
+        Train Time:
+        {formatTime(trainDuration)}
+      </label>
+      <input
+        id="trainDuration"
+        type="range"
+        bind:value="{trainDuration}"
+        min="0"
+        max="300000"
+        step="1000"
+      />
+      <label class="mt-2" for="restDuration">
+        Rest Time:
+        {formatTime(restDuration)}
+      </label>
+      <input
+        id="restDuration"
+        type="range"
+        bind:value="{restDuration}"
+        min="0"
+        max="60000"
+        step="1000"
+      />
+    </div>
+  </div>
 </main>
