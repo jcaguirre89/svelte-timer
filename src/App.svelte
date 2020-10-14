@@ -16,8 +16,8 @@
   $: isTrain = ["train", "trainPaused"].includes(currentState);
   $: isRest = ["rest", "restPaused"].includes(currentState);
   let previousState = null;
-  let trainDuration = 5000;
-  let restDuration = 3000;
+  let trainDuration = 120000;
+  let restDuration = 30000;
   $: trainRemaining = trainDuration;
   $: restRemaining = restDuration;
   $: timeRemaining = isRest ? restRemaining : trainRemaining;
