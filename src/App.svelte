@@ -102,7 +102,7 @@
 
 <style lang="postcss">
   main {
-    @apply h-screen w-screen bg-gray-500 flex flex-col items-center;
+    @apply h-screen w-screen bg-gray-700 flex flex-col items-center;
   }
 
   button {
@@ -139,14 +139,21 @@
     {/if}
     <div class="flex">
       {#if currentState == states.idle}
-        <button on:click="{train}"><PlayIcon /></button>
+        <button on:click="{train}" aria-label="Start Timer"><PlayIcon
+          /></button>
       {:else}
         {#if currentState.endsWith('Paused')}
-          <button on:click="{resume}"><PlayIcon /></button>
+          <button on:click="{resume}" aria-label="Resume Timer"><PlayIcon
+            /></button>
         {:else}
-          <button on:click="{pause}"><PauseIcon /></button>
+          <button on:click="{pause}" aria-label="Pause Timer"><PauseIcon
+            /></button>
         {/if}
-        <button class="ml-2" on:click="{reset}"><StopIcon /></button>
+        <button
+          class="ml-2"
+          on:click="{reset}"
+          aria-label="Reset Timer"
+        ><StopIcon /></button>
       {/if}
     </div>
     <div class="flex flex-col mt-12">
