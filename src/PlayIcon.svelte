@@ -1,6 +1,3 @@
-<script>
-  export let additionalStyles
-</script>
 
 <svg
   class="w-24 h-24"
