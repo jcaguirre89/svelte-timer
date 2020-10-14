@@ -1,4 +1,3 @@
-
 <svg
   class="w-24 h-24"
   fill="none"
