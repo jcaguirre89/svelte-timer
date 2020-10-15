@@ -9,19 +9,29 @@
     train: "train",
     idle: "idle",
     rest: "rest",
+    longRest: "longRest",
     trainPaused: "trainPaused",
     restPaused: "restPaused",
+    longRestPaused: "longRestPaused",
   };
   let currentState = states.idle;
   $: isTrain = ["train", "trainPaused"].includes(currentState);
   $: isRest = ["rest", "restPaused"].includes(currentState);
+  $: isLongRest = ["longRest", "longRestPaused"].includes(currentState);
   let previousState = null;
   let trainDuration = 120000;
   let restDuration = 30000;
+  let longRestDuration = 60000;
   $: trainRemaining = trainDuration;
   $: restRemaining = restDuration;
-  $: timeRemaining = isRest ? restRemaining : trainRemaining;
+  $: longRestRemaining = longRestDuration;
+  $: timeRemaining = isRest
+    ? restRemaining
+    : isTrain
+    ? trainRemaining
+    : longRestRemaining;
   let rounds = 0;
+  let longRestCycle = 5;
   let paused = false;
   let interval;
 
@@ -38,10 +48,12 @@
 
   function pause() {
     paused = !paused;
-    if (currentState == "rest") {
+    if (currentState == states.rest) {
       setState(states.restPaused);
-    } else if (currentState == "train") {
+    } else if (currentState == states.train) {
       setState(states.trainPaused);
+    } else if (currentState == states.longRest) {
+      setState(states.longRestPaused);
     } else {
       throw Error(`Can't pause in this state ${currentState}`);
     }
@@ -49,10 +61,12 @@
 
   function resume() {
     paused = !paused;
-    if (currentState == "restPaused") {
+    if (currentState == states.restPaused) {
       rest();
-    } else if (currentState == "trainPaused") {
+    } else if (currentState == states.trainPaused) {
       train();
+    } else if (currentState == states.longRestPaused) {
+      longRest();
     } else {
       throw Error(`Can't resume in this state ${currentState}`);
     }
@@ -73,7 +87,11 @@
 
   function completeRound() {
     rounds += 1;
-    rest();
+    if (rounds % longRestCycle) {
+      rest();
+    } else {
+      longRest();
+    }
   }
 
   function rest() {
@@ -86,6 +104,19 @@
         train();
       }
       restRemaining -= 10;
+    }, 10);
+  }
+
+  function longRest() {
+    setState(states.longRest);
+    if (previousState != states.longRestPaused) {
+      switchState();
+    }
+    interval = setInterval(() => {
+      if (longRestRemaining === 0) {
+        train();
+      }
+      longRestRemaining -= 10;
     }, 10);
   }
 
@@ -110,7 +141,7 @@
   }
 
   input {
-    @apply w-40;
+    @apply w-full;
   }
 
   label {
@@ -124,10 +155,14 @@
   .isTrain {
     @apply bg-green-500;
   }
+
+  .isLongRest {
+    @apply bg-yellow-600;
+  }
 </style>
 
-<main class:isRest class:isTrain class="md:justify-center">
-  <div class="mt-32 md:mt-0">
+<main class:isRest class:isTrain class:isLongRest class="md:justify-center">
+  <div class="mt-24 md:mt-0">
     <p class="text-6xl text-white mb-b">{formatTime(timeRemaining)}</p>
     {#if rounds >= 1}
       <p class="text-white text-2xl mb-12">
@@ -180,6 +215,29 @@
         min="0"
         max="60000"
         step="1000"
+      />
+      <label class="mt-2" for="longRestDuration">
+        Long Rest Time:
+        {formatTime(longRestDuration)}
+      </label>
+      <input
+        id="longRestDuration"
+        type="range"
+        bind:value="{longRestDuration}"
+        min="0"
+        max="180000"
+        step="1000"
+      />
+      <label class="mt-2" for="longRestCycle">
+        Long Rest every {longRestCycle} rounds
+      </label>
+      <input
+        id="longRestCycle"
+        type="range"
+        bind:value="{longRestCycle}"
+        min="0"
+        max="10"
+        step="1"
       />
     </div>
   </div>
