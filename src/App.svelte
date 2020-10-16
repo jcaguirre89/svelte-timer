@@ -27,9 +27,9 @@
   $: longRestRemaining = longRestDuration;
   $: timeRemaining = isRest
     ? restRemaining
-    : isTrain
-    ? trainRemaining
-    : longRestRemaining;
+    : isLongRest
+    ? longRestRemaining
+    : trainRemaining;
   let rounds = 0;
   let longRestCycle = 5;
   let paused = false;
